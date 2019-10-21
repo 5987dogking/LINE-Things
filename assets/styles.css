@@ -75,3 +75,8 @@ body {
 mat-drawer-container {
   height: 100vh;
 }
+
+.flex-c {
+  display: flex;
+  justify-content: center;
+}
