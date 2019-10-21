@@ -10,11 +10,11 @@
     <link rel="stylesheet" href="assets/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+    <!-- <script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script> -->
     <script>
         // init vConsole
-        var vConsole = new VConsole();
-        console.log('Hello world');
+        // var vConsole = new VConsole();
+        // console.log('Hello world');
     </script>
 </head>
 
@@ -47,7 +47,9 @@
                 </a>
             </div>
             <div class="col s12">
+                <pre>
                 data => {{profile}}
+                </pre>
             </div>
         </div>
     </div>
@@ -85,20 +87,8 @@
         function getProfile() {
             liff.getProfile().then((profile) => {
                 window.app.profile = profile;
-                document.getElementById('userIdProfileField').textContent = profile.userId;
-                document.getElementById('displayNameField').textContent = profile.displayName;
-                const profilePictureDiv = document.getElementById('profilePictureDiv');
-                if (profilePictureDiv.firstElementChild) {
-                    profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
-                }
-                const img = document.createElement('img');
-                img.src = profile.pictureUrl;
-                img.alt = 'Profile Picture';
-                profilePictureDiv.appendChild(img);
-                document.getElementById('statusMessageField').textContent = profile.statusMessage;
-                toggleProfileData();
-            }).catch(function (error) {
-                window.alert('Error getting profile: ' + error);
+            }).catch((error) => {
+                console.log('Error getting profile: ' + error);
             });
         }
     </script>

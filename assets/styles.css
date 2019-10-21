@@ -80,3 +80,8 @@ mat-drawer-container {
   display: flex;
   justify-content: center;
 }
+
+pre {
+  word-break: break-all;
+  white-space: inherit;
+}
