@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="assets/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- <script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script> -->
     <script>
         // init vConsole
@@ -31,42 +32,69 @@
     <div class="container" id="app">
         <div class="row">
             <div class="col s12">
-                <img id="myImage" src="https://www.w3schools.com/js/pic_bulboff.gif"
-                    style="margin: 50px auto;display: block;">
+                <img id="myImage" :src="ledImg[status]" style="margin: 50px auto;display: block;">
             </div>
             <div class="col s6">
-                <a class="waves-effect waves-light btn btn-block flex-c red"
-                    onclick="document.getElementById('myImage').src='https://www.w3schools.com/js/pic_bulboff.gif'">
+                <a class="waves-effect waves-light btn btn-block flex-c red" @click="relayOff">
                     <i class="large material-icons">highlight_off</i>關
                 </a>
             </div>
             <div class="col s6">
-                <a class="waves-effect waves-light btn btn-block flex-c indigo"
-                    onclick="document.getElementById('myImage').src='https://www.w3schools.com/js/pic_bulbon.gif'">
+                <a class="waves-effect waves-light btn btn-block flex-c indigo" @click="relayOn">
                     <i class="large material-icons">power_settings_new</i>開
                 </a>
-            </div>
-            <div class="col s12">
-                <pre>
-                data => {{profile}}
-                </pre>
             </div>
         </div>
     </div>
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     <script>
+        //http://focusdc.com.tw/willpower/api/log/box/IO/Demo_TSIC/Demo
         var app = new Vue({
             el: '#app',
             data: {
                 message: 'Hello Vue!',
+                ledImg: [
+                    'https://www.w3schools.com/js/pic_bulboff.gif',
+                    'https://www.w3schools.com/js/pic_bulbon.gif',
+                ],
+                status: 0,
                 profile: {},
+            },
+            methods: {
+                relayOn() {
+                    this.statusSet(1);
+                    console.log('relayOn');
+                },
+                relayOff() {
+                    this.statusSet(0);
+                    console.log('relayOff');
+                },
+                statusGet() {
+                    axios.get(`https://focusdc.com.tw/willpower/api/log/box/IO/Demo_TSIC/Demo`).then((response) => {
+                        console.log('statusGet', response.data);
+                        this.status = response.data[1];
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                },
+                statusSet(switch_i) {
+                    axios.get(`https://focusdc.com.tw/willpower/api/log/post_box/IO/Demo_TSIC/Demo/${switch_i}/0/0/0/0/0`).then((response) => {
+                        this.statusGet();
+                        console.log(response);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                },
+            },
+            beforeMount() {
+                this.statusGet();
             }
         });
 
         const urlParams = new URLSearchParams(window.location.search);
         const liffId = urlParams.get('liffId');
-        console.log(liffId);
-        initializeLiff(liffId);
+        // console.log(liffId);
+        // initializeLiff(liffId);
         /**
     * Initialize LIFF
     * @param {string} liffId The LIFF ID of the selected element
